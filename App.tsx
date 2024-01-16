@@ -1,21 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import HomeScreen from './src/screens/HomeScreen';
-import { PaperProvider, MD3LightTheme as DefaultTheme } from 'react-native-paper';
+import { StyleSheet, useColorScheme } from 'react-native';
+import { PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 import NavigationApp from './index';
-
-const theme = {
-  ...DefaultTheme,
-  ...DefaultTheme.colors,
-  colors: {
-    primary: '#C30BD3',
-  },
-};
+import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
 
 export default function App() {
+  const colorScheme = "dark";
+  const { theme } = useMaterial3Theme();
+
+  const paperTheme =
+    colorScheme === 'dark'
+      ? { ...MD3DarkTheme, colors: theme.dark }
+      : { ...MD3LightTheme, colors: theme.light };
+
   return (
-    <PaperProvider theme={theme}>
-        <NavigationApp />
+    <PaperProvider theme={paperTheme}>
+      <NavigationApp />
     </PaperProvider>
   );
 }

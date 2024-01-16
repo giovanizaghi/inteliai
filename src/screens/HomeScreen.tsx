@@ -4,10 +4,12 @@ import Row from "../components/Row";
 import Col from "../components/Col";
 import { vh, vw } from "../constants/device";
 import { useTheme } from 'react-native-paper';
+import { useNavigation } from "@react-navigation/native";
 
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
     const { colors } = useTheme();
+    const navigation = useNavigation();
 
     const images = [
         { id: 1, source: require("../../assets/tab1samp/01.png") },
@@ -18,27 +20,27 @@ export default function HomeScreen({ navigation }) {
         { id: 6, source: require("../../assets/tab1samp/06.png") },
     ];
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={{...styles.container, backgroundColor: colors.background}}>
             <View style={styles.content}>
 
-                <Row MD={2} spaceBetween>
+                <Row MD={1} spaceBetween>
                     <Col MD={5}>
                         <Text variant="headlineLarge">
                             Avatares
                         </Text>
                     </Col>
                     <Col MD={3}>
-                        <Button icon="diamond" mode="contained" textColor="#fff" onPress={() => navigation.navigate("GetPro")}>
+                        <Button icon="diamond" mode="contained" onPress={() => navigation.navigate("GetPro")}>
                             PRO
                         </Button>
                     </Col>
                     <Col MD={1}>
-                        <IconButton icon="cog" mode="contained-tonal" onPress={() => {}} />
+                        <IconButton icon="cog" mode="contained-tonal" onPress={() => { }} />
                     </Col>
                 </Row>
 
                 <Row MD={12} justifyContent="center">
-                    
+
                     {images.map((image, index) => (
                         <View key={image.id} style={[styles.imageContainer, index % 2 === 0 ? styles.rightMargin : styles.leftMargin]}>
                             <Image source={image.source} style={styles.image} />
@@ -46,7 +48,7 @@ export default function HomeScreen({ navigation }) {
                     ))}
                 </Row>
 
-                <Row MD={0.8}>
+                <Row MD={1}>
                     <Text variant="titleLarge" style={{ width: "100%", textAlign: "center" }}>
                         Avatares de <Text style={{ color: colors.primary, fontWeight: "bold" }}>IA</Text>
                     </Text>
@@ -58,7 +60,7 @@ export default function HomeScreen({ navigation }) {
                 </Row>
 
                 <Row MD={1}>
-                    <Button mode="contained" style={{ width: "100%" }} textColor="#fff" onPress={() => {}}>
+                    <Button mode="contained" style={{ width: "100%" }} onPress={() => { }}>
                         Criar meu avatar
                     </Button>
                 </Row>

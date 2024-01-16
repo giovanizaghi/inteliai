@@ -29,35 +29,35 @@ export default function GenerateScreen({ navigation }: RootStackScreenProps<'Gen
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={{ ...styles.container, backgroundColor: colors.background }}>
             <ScrollView style={styles.content}>
                 <Row MD={2} spaceBetween>
                     <Col MD={5}>
-                        <Text variant="headlineLarge">
+                        <Text variant="headlineLarge" >
                             Gerar
                         </Text>
                     </Col>
                     <Col MD={3}>
-                        <Button icon="diamond" mode="contained" textColor="#fff" onPress={() => navigation.navigate("GetPro")}>
+                        <Button icon="diamond" mode="contained" onPress={() => navigation.navigate("GetPro")}>
                             PRO
                         </Button>
                     </Col>
                     <Col MD={1}>
-                        <IconButton icon="cog" mode="contained-tonal" onPress={() => {}} />
+                        <IconButton icon="cog" mode="contained-tonal" onPress={() => { }} />
                     </Col>
                 </Row>
                 <Row MD={2}>
                     <Pressable style={{ borderColor: colors.primary, ...styles.input }} onPress={() => setInputVisible(v => !v)}>
                     </Pressable>
                 </Row>
-                <Row MD={1}>
+                <Row MD={1} style={{marginVertical: vw(2)}}>
                     <Col MD={1}>
-                        <Text>
+                        <Text variant="labelLarge">
                             Deixe a IA decidir
                         </Text>
                     </Col>
                     <Col MD={1} alignItems="flex-end">
-                        <Text>
+                        <Text variant="labelLarge">
                             Imagem
                         </Text>
                     </Col>

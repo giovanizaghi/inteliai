@@ -6,9 +6,10 @@ interface RowProps {
   MD?: number;
   spaceBetween?: boolean;
   justifyContent?: ViewStyle['justifyContent'];
+  style?: ViewStyle;
 }
 
-const Row: React.FC<RowProps> = ({ children, MD, spaceBetween, justifyContent }) => {
+const Row: React.FC<RowProps> = ({ children, MD, spaceBetween, justifyContent, style }) => {
   const rowStyles: ViewStyle = {
     flexDirection: 'row',
     alignItems: 'center',
@@ -27,7 +28,7 @@ const Row: React.FC<RowProps> = ({ children, MD, spaceBetween, justifyContent })
     rowStyles.justifyContent = justifyContent;
   }
 
-  return <View style={[styles.row, rowStyles]}>{children}</View>;
+  return <View style={[styles.row, rowStyles, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({

@@ -7,12 +7,16 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from './type
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import GenerateScreen from './src/screens/GenerateScreen';
 import GeneratedImageScreen from './src/screens/GeneratedImageScreen';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Text, useTheme } from 'react-native-paper';
+import { vw } from './src/constants/device';
+import { View } from 'react-native';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function NavigationApp() {
     return (
-        <NavigationContainer>
+        <NavigationContainer >
             <RootNavigator />
         </NavigationContainer>
     );
@@ -33,6 +37,7 @@ function RootNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator(): JSX.Element {
+    const { colors } = useTheme();
 
     return (
         <BottomTab.Navigator initialRouteName="TabOne">
@@ -44,6 +49,12 @@ function BottomTabNavigator(): JSX.Element {
                     headerTitle: "",
                     headerShown: false,
                     unmountOnBlur: false,
+                    tabBarIcon: ({ focused }) => <AntDesign name="scan1" size={vw(7)} color={focused ? colors.primary : colors.onBackground} />,
+                    tabBarLabel: (focused) =>
+                        <Text variant='bodyMedium' style={{ color: focused ? colors.primary : colors.onBackground }}>
+                            Avatares
+                        </Text>,
+                    tabBarStyle: { height: vw(20), backgroundColor: colors.background  }
                 })}
             />
 
@@ -55,6 +66,12 @@ function BottomTabNavigator(): JSX.Element {
                     unmountOnBlur: false,
                     headerShown: false,
                     headerTitle: "",
+                    tabBarIcon: ({ focused }) => <Ionicons name='color-wand-outline' size={vw(7)} color={focused ? colors.primary : colors.onBackground} />,
+                    tabBarLabel: (focused) =>
+                        <Text variant='bodyMedium' style={{ color: focused ? colors.primary : colors.onBackground }}>
+                            Gerar
+                        </Text>,
+                    tabBarStyle: { height: vw(20), backgroundColor: colors.background }
                 }}
             />
 

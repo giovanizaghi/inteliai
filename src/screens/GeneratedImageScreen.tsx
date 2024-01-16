@@ -1,20 +1,23 @@
-import { StyleSheet, View, Image, SafeAreaView } from "react-native";
+import { StyleSheet, View, Image, SafeAreaView, TouchableOpacity } from "react-native";
 import { RootStackScreenProps } from "../../types";
-import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Button, IconButton, Text } from "react-native-paper";
+import React, { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, IconButton, Switch, Text, useTheme } from "react-native-paper";
 import Row from "../components/Row";
 import { vw } from "../constants/device";
-import Col from "../components/Col";
 import { OpenAI, eModel, eQuality, eResponseFormat, eSize, eStyle } from "gio-react-native-openai";
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from "expo-file-system";
+import { AntDesign, Feather, Octicons } from "@expo/vector-icons";
+import Col from "../components/Col";
+import * as Sharing from 'expo-sharing';
 
 export default function GeneratedImageScreen({ navigation, route }: RootStackScreenProps<'GeneratedImage'>) {
+    const { colors } = useTheme();
     const { prompt, style } = route?.params;
     const openai = new OpenAI(process.env.EXPO_PUBLIC_OPENAI, process.env.EXPO_PUBLIC_ORG);
 
     const [loading, setLoading] = useState<boolean>();
-    const [imageUrl, setImageUrl] = useState<string>("https://oaidalleapiprodscus.blob.core.windows.net/private/org-xDgkNCcBtmEluQvm2CxofvV1/user-OErcmP7ey2Zqm38FcY4eoaNx/img-AcJfvtMpzm9cFaS6WS2lgO8x.png?st=2024-01-14T18%3A33%3A05Z&se=2024-01-14T20%3A33%3A05Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-01-14T08%3A35%3A16Z&ske=2024-01-15T08%3A35%3A16Z&sks=b&skv=2021-08-06&sig=bicyMKiRX4%2BRZuevAz/qNWduhJSvJ8QySG94lONKUBc%3D");
+    const [imageUrl, setImageUrl] = useState<string>("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDsGqi0HpRiSqlcThGJRn-3h9z6oVTxnV3bw&usqp=CAU");
     const [permissionStatus, setPermissionStatus] = useState<MediaLibrary.PermissionStatus | null>(null);
 
     const handleCreate = useCallback(
@@ -50,6 +53,22 @@ export default function GeneratedImageScreen({ navigation, route }: RootStackScr
         [prompt, style],
     );
 
+    const shareHandle = useCallback(
+        async () => {
+            const isAvailable = await Sharing.isAvailableAsync();
+            if (!isAvailable) return;
+
+            const localuri = await FileSystem.downloadAsync(
+                imageUrl,
+                FileSystem.documentDirectory + 'InteliAIGenerated.png'
+            );
+
+            Sharing.shareAsync(localuri.uri);
+        },
+        [imageUrl],
+    );
+
+
     const downloadImage = useCallback(
         async () => {
             if (permissionStatus !== MediaLibrary.PermissionStatus.GRANTED) {
@@ -67,7 +86,7 @@ export default function GeneratedImageScreen({ navigation, route }: RootStackScr
             );
             try {
                 const asset = await MediaLibrary.createAssetAsync(localuri.uri);
-                
+
                 asset.mediaType = MediaLibrary.MediaType.photo;
                 // Verifica se a imagem já está na biblioteca de fotos
                 const album = await MediaLibrary.getAlbumAsync('IntelliAI'); // Substitua 'SeuAlbum' pelo nome desejado do álbum
@@ -112,38 +131,65 @@ export default function GeneratedImageScreen({ navigation, route }: RootStackScr
         )
     } else {
         return (
-            <SafeAreaView style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
                 <View style={styles.container}>
                     <Row MD={1}>
-                        <IconButton size={vw(8)} icon="close" iconColor="#000" onPress={() => navigation.pop()} style={{ margin: 0 }} />
+                        <IconButton size={vw(8)} icon="close" iconColor={colors.onBackground} onPress={() => navigation.pop()} style={{ margin: 0 }} />
                     </Row>
-                    <Row MD={1}>
-                        <View>
-                            <Text>
-                                Marda d'àgua
+                    <Row MD={1} justifyContent="flex-end">
+                        <View style={{ ...styles.proArea, backgroundColor: colors.primary, borderTopLeftRadius: 50, borderBottomLeftRadius: 50 }}>
+                            <Text style={{ color: colors.onPrimary }} variant="bodyLarge">
+                                PRO
                             </Text>
                         </View>
+                        <View style={{ ...styles.proArea, backgroundColor: colors.primaryContainer, borderTopRightRadius: 50, borderBottomRightRadius: 50 }}>
+                            <Text variant="bodyLarge" style={{ marginRight: vw(2), color: colors.onPrimaryContainer }}>
+                                Marca d'àgua
+                            </Text>
+                            <Switch value={true} color={colors.onPrimaryContainer} />
+                        </View>
                     </Row>
-                    <Row MD={10} justifyContent="center">
+                    <Row MD={7} justifyContent="center">
                         {
                             imageUrl &&
-                            <Image source={{ uri: imageUrl }} style={{ width: 256, height: 256 }} />
+                            <Image source={{ uri: imageUrl }} style={styles.image} />
                         }
                     </Row>
-                    <Row>
-                        <Col MD={1}>
-                            <Button onPress={downloadImage}>
-                                Teste
-                            </Button>
+                    <Row MD={3}>
+                        <View style={{ ...styles.fakeInput, borderColor: colors.primary }}>
+                            <Text variant="bodyLarge" style={{ color: colors.onBackground }}>
+                                Cabelo curto, olhar sério, boca redond...
+                            </Text>
+                            <Feather name="edit-2" size={vw(5)} color={colors.primary} />
+                        </View>
+                        <Text style={{ color: colors.onBackground }} variant="labelMedium">
+                            Estilo: fantasia
+                        </Text>
+                    </Row>
+                    <Row MD={2} justifyContent="space-between">
+                        <Col MD={1} alignItems="center">
+                            <TouchableOpacity style={{ ...styles.roundButton, backgroundColor: colors.primary }}>
+                                <Feather name="refresh-cw" size={vw(7)} color={colors.onPrimary} />
+                            </TouchableOpacity>
+                            <Text style={{ color: colors.onBackground }} variant="labelMedium">
+                                Gerar novamente
+                            </Text>
                         </Col>
-                        <Col MD={1}>
-
+                        <Col MD={1} alignItems="center">
+                            <TouchableOpacity style={{ ...styles.roundButton, backgroundColor: colors.primary }} onPress={downloadImage}>
+                                <Octicons name="download" size={vw(7)} color={colors.onPrimary} />
+                            </TouchableOpacity>
+                            <Text style={{ color: colors.onBackground }} variant="labelMedium">
+                                Salvar
+                            </Text>
                         </Col>
-                        <Col MD={1}>
-
-                        </Col>
-                        <Col MD={1}>
-
+                        <Col MD={1} alignItems="center">
+                            <TouchableOpacity style={{ ...styles.roundButton, backgroundColor: colors.primary }} onPress={shareHandle}>
+                                <Octicons name="share" size={vw(7)} color={colors.onPrimary} />
+                            </TouchableOpacity>
+                            <Text style={{ color: colors.onBackground }} variant="labelMedium">
+                                Compartilhar
+                            </Text>
                         </Col>
                     </Row>
                 </View>
@@ -162,5 +208,38 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
+        paddingHorizontal: vw(5),
+    },
+    image: {
+        width: "100%",
+        aspectRatio: 1,
+        borderRadius: 10
+    },
+    proArea: {
+        paddingHorizontal: vw(2),
+        paddingVertical: vw(2),
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        height: vw(10)
+    },
+    fakeInput: {
+        borderWidth: 2,
+        width: "100%",
+        height: vw(12),
+        borderRadius: 10,
+        alignItems: "center",
+        paddingHorizontal: vw(3),
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginBottom: vw(4)
+    },
+    roundButton: {
+        borderRadius: 50,
+        width: vw(17),
+        height: vw(17),
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: vw(1)
     }
 });
