@@ -4,7 +4,7 @@ import NavigationApp from './index';
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
 
 export default function App() {
-  const colorScheme = "dark";
+  const colorScheme = useColorScheme();
   const { theme } = useMaterial3Theme();
 
   const paperTheme =

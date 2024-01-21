@@ -20,6 +20,12 @@ export type RootStackParamList = {
     GeneratedImage: {
         prompt: string,
         style: string,
+    },
+    Prompt: {
+        imageSample: string,
+        style: string,
+        title: string,
+        description: string,
     }
 };
 
