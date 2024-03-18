@@ -1,12 +1,11 @@
-import { View, StyleSheet, SafeAreaView, Image, ScrollView, Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet, SafeAreaView, Image, ScrollView, Pressable, TouchableOpacity } from "react-native";
 import Row from "../components/Row";
 import { Button, IconButton, Text, useTheme, } from 'react-native-paper';
 import Col from "../components/Col";
 import { vw } from "../constants/device";
 import InputAI from "../components/InputAI/InputAI";
 import { RootStackScreenProps } from "../../types";
-import { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { RewardedAdEventType, RewardedAd, TestIds } from 'react-native-google-mobile-ads';
 import language from "../../language";
 
@@ -14,10 +13,9 @@ const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-5538301654782962/20372
 
 const rewarded = RewardedAd.createForAdRequest(adUnitId);
 
-export default function GenerateScreen() {
+export default function GenerateScreen({ navigation, route }: RootStackScreenProps<'Generate'>) {
 
     const { colors } = useTheme();
-    const navigation = useNavigation();
     const { texts } = language();
 
     const [loaded, setLoaded] = useState(false);
@@ -48,14 +46,49 @@ export default function GenerateScreen() {
     ];
 
     const mostUsedImages = [
-        { source: require("../../assets/tab2samp/tabtwo_sample_04.png"), title: "Anime", isPro: true },
-        { source: require("../../assets/tab2samp/tabtwo_sample_05.png"), title: "Vídeo game", isPro: false },
+        {
+            source: require("../../assets/tab2samp/tabtwo_sample_04.png"),
+            style: "Anime",
+            title: "Anime",
+            description: "Estilo realista é um estilo lorem ipsum bla_dar-Car",
+            isPro: true,
+        },
+        {
+            source: require("../../assets/tab2samp/tabtwo_sample_05.png"),
+            style: "Vídeo game",
+            title: "Vídeo game",
+            description: "Estilo realista é um estilo lorem ipsum bla_dar-Car",
+            isPro: false,
+        },
     ];
 
     const handleGenerate = (prompt: string, category: string) => {
         setInputVisible(false);
         navigation.navigate("LoadingImage", { prompt: prompt, style: category });
     };
+
+    const promptPressHandle = useCallback(
+        (data: typeof categoryImages[0]) => {
+            navigation.navigate("Prompt", {
+                description: data.description,
+                imageSample: data.source,
+                style: data.title,
+                title: data.title,
+                isPro: data.isPro
+            })
+        },
+        [navigation],
+    );
+
+    const slicedPrompt = useMemo(() => {
+        if (!route?.params?.inputValue) return;
+
+        if (route?.params?.inputValue.length > 40) {
+            return `${route?.params?.inputValue.slice(0, 40)}...`
+        } else {
+            return route?.params?.inputValue;
+        }
+    }, [route?.params?.inputValue]);
 
     useEffect(() => {
         const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
@@ -76,6 +109,16 @@ export default function GenerateScreen() {
             unsubscribeEarned();
         };
     }, []);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            if (route?.params?.showInputOnLoad) {
+                setInputVisible(true);
+            }
+        });
+
+        return unsubscribe();
+    }, [navigation]);
 
 
     return (
@@ -99,6 +142,9 @@ export default function GenerateScreen() {
                 </Row>
                 <Row MD={2}>
                     <Pressable style={{ borderColor: colors.primary, ...styles.input }} onPress={() => setInputVisible(v => !v)}>
+                        <Text variant="bodyMedium">
+                            {slicedPrompt}
+                        </Text>
                     </Pressable>
                 </Row>
                 <Row MD={1} style={{ marginVertical: vw(2) }}>
@@ -127,7 +173,7 @@ export default function GenerateScreen() {
                         {
                             categoryImages.map((data, index) =>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate("Prompt", { description: data.description, imageSample: data.source, style: data.title, title: data.title })}
+                                    onPress={() => promptPressHandle(data)}
                                     key={index}
                                 >
                                     <Image source={data.source} style={styles.categoryImage} />
@@ -150,12 +196,14 @@ export default function GenerateScreen() {
                     <ScrollView horizontal>
                         {
                             mostUsedImages.map((data, index) =>
-                                <View key={index}>
+                                <TouchableOpacity
+                                    key={index}
+                                    onPress={() => promptPressHandle(data)}>
                                     <Image source={data.source} style={styles.largeImage} />
                                     <Text variant="labelLarge">
                                         {data.title}
                                     </Text>
-                                </View>
+                                </TouchableOpacity>
                             )
                         }
                     </ScrollView>
@@ -173,6 +221,7 @@ export default function GenerateScreen() {
                 visible={inputVisible}
                 handleGenerate={handleGenerate}
                 handleClosePress={() => setInputVisible(v => !v)}
+                initialValue={route?.params?.inputValue}
             />
         </SafeAreaView>
     )

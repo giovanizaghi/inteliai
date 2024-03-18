@@ -16,17 +16,21 @@ export type RootStackParamList = {
     | undefined;
     Home: undefined;
     GetPro: undefined;
-    Generate: undefined;
+    Generate: {
+        showInputOnLoad?: boolean,
+        inputValue?: string
+    };
     GeneratedImage: {
         prompt: string,
         style: string,
         image: string,
     },
     Prompt: {
-        imageSample: string,
+        imageSample: any,
         style: string,
         title: string,
         description: string,
+        isPro: boolean,
     },
     LoadingImage: {
         prompt: string,

@@ -1,6 +1,6 @@
 import { StyleSheet, View, Image, SafeAreaView, TouchableOpacity } from "react-native";
 import { RootStackScreenProps } from "../../types";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { IconButton, Switch, Text, useTheme } from "react-native-paper";
 import Row from "../components/Row";
 import { vw } from "../constants/device";
@@ -102,13 +102,36 @@ export default function GeneratedImageScreen({ navigation, route }: RootStackScr
         }
     };
 
+    const fakeInputPressHandle = useCallback(
+        () => {
+            navigation.popToTop();
+            navigation.navigate("Generate",
+                {
+                    showInputOnLoad: true,
+                    inputValue: prompt
+                })
+        },
+        [navigation, prompt],
+    );
+
+    const slicedPrompt = useMemo((): string => {
+        if (!prompt) return "";
+
+        if (prompt.length > 40) {
+            return `${prompt.slice(0, 40)}...`
+        } else {
+            return prompt;
+        }
+    }, [prompt]);
+
+
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
             rewarded.load();
         });
 
         return unsubscribe;
-    }, [navigation])
+    }, [navigation]);
 
 
     useEffect(() => {
@@ -205,7 +228,8 @@ export default function GeneratedImageScreen({ navigation, route }: RootStackScr
                 </Row>
                 <Row
                     MD={3}>
-                    <View
+                    <TouchableOpacity
+                        onPress={fakeInputPressHandle}
                         style={{
                             ...styles.fakeInput,
                             borderColor: colors.primary
@@ -213,13 +237,13 @@ export default function GeneratedImageScreen({ navigation, route }: RootStackScr
                         <Text
                             variant="bodyLarge"
                             style={{ color: colors.onBackground }}>
-                            {prompt}
+                            {slicedPrompt}
                         </Text>
                         <Feather
                             name="edit-2"
                             size={vw(5)}
                             color={colors.primary} />
-                    </View>
+                    </TouchableOpacity>
                     <Text
                         style={{ color: colors.onBackground }}
                         variant="labelMedium">

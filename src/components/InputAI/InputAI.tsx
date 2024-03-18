@@ -1,5 +1,5 @@
 
-import { View, StyleSheet, TextInput, ScrollView, Image, TouchableOpacity, NativeSyntheticEvent, TextInputFocusEventData } from "react-native";
+import { View, StyleSheet, TextInput, ScrollView, Image, TouchableOpacity } from "react-native";
 import Modal from "react-native-modal";
 import Row from "../Row";
 import Col from "../Col";
@@ -12,11 +12,13 @@ interface InputAIProps {
     visible: boolean;
     handleGenerate: (prompt: string, category: string) => void;
     handleClosePress: () => void;
+    initialValue?: string,
 }
 export default function InputAI({
     visible,
     handleGenerate,
-    handleClosePress
+    handleClosePress,
+    initialValue
 }: InputAIProps) {
 
     const { colors } = useTheme();
@@ -70,6 +72,12 @@ export default function InputAI({
         inputRef.current.focus();
 
     }, [inputRef]);
+
+    useEffect(() => {
+     if(!initialValue) return;
+     setPrompt(initialValue);
+    }, []);
+    
 
 
     return (

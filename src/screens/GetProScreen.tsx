@@ -49,7 +49,7 @@ export default function GetProScreen({ navigation }: RootStackScreenProps<'GetPr
                         <Col MD={10}>
                             <Row>
                                 {
-                                    message.split("-").map((t, i) => (<Text variant="bodyLarge" style={{ color: i === 0 ? "#fff" : colors.primary }}>{t}</Text>))
+                                    message.split("-").map((t, i) => (<Text key={`a${i}`} variant="bodyLarge" style={{ color: i === 0 ? "#fff" : colors.primary }}>{t}</Text>))
                                 }
 
                             </Row>
