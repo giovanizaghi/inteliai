@@ -11,6 +11,7 @@ import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Text, useTheme } from 'react-native-paper';
 import { vw } from './src/constants/device';
 import PromptScreen from './src/screens/PromptScreen';
+import LoadingImageScreen from './src/screens/LoadingImageScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -31,6 +32,7 @@ function RootNavigator() {
             <Stack.Screen name="Generate" component={GenerateScreen} options={{ headerShown: false, animation: "slide_from_bottom" }} />
             <Stack.Screen name="GeneratedImage" component={GeneratedImageScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Prompt" component={PromptScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="LoadingImage" component={LoadingImageScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 }

@@ -1,15 +1,16 @@
-import { ScrollView, StyleSheet, View, Image, Touchable, Pressable } from "react-native";
-import { Button, IconButton, Text, } from 'react-native-paper';
+import { StyleSheet, View, Image, Pressable } from "react-native";
+import { IconButton, Text, } from 'react-native-paper';
 import Row from "../components/Row";
 import Col from "../components/Col";
 import { vh, vw } from "../constants/device";
 import { useTheme } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import Icon from "react-native-paper/lib/typescript/components/Icon";
-import EllipseMarker from "../../assets/marker.svg";
+import { RootStackScreenProps } from "../../types";
+import language from "../../language";
 
-export default function GetProScreen({ navigation }) {
+export default function GetProScreen({ navigation }: RootStackScreenProps<'GetPro'>) {
     const { colors } = useTheme();
+    const { texts } = language();
 
     // const Icon = () => <EllipseMarker width={vw(5)} height={vw(5)} fill={colors.onPrimary} />;
     const Icon = () => <View />;
@@ -19,11 +20,11 @@ export default function GetProScreen({ navigation }) {
     </View>;
 
     const messages = [
-        "Criação de arte- ilimitada",
-        "Processamento de imagem- mais rápido",
-        "Toda experiência- sem anúncios",
-        "Qualidade de imagem- extrema",
-    ]
+        texts("obterProVantagem1"),
+        texts("obterProVantagem2"),
+        texts("obterProVantagem3"),
+        texts("obterProVantagem4"),
+    ];
 
     return (
         <View style={styles.container}>
@@ -34,7 +35,7 @@ export default function GetProScreen({ navigation }) {
             </Row>
             <Row MD={0.45}>
                 <Text variant="headlineSmall" style={{ color: "#fff" }}>
-                    OBTENHA O ACESSO COMPLETO
+                    {texts("obtenhaAcessoCompleto").toUpperCase()}
                 </Text>
             </Row>
             {
@@ -43,7 +44,6 @@ export default function GetProScreen({ navigation }) {
                         <Col MD={1}>
                             <Text>
                                 <Icon />
-
                             </Text>
                         </Col>
                         <Col MD={10}>
@@ -64,12 +64,12 @@ export default function GetProScreen({ navigation }) {
                         <Col MD={10}>
                             <Row>
                                 <Text variant="titleLarge" style={{ color: "#fff" }}>
-                                    3 DIAS DE TESTE GRATIS
+                                    3 {texts("diasDeTesteGratis")}
                                 </Text>
                             </Row>
                             <Row>
                                 <Text variant="titleSmall" style={{ color: "#fff" }}>
-                                    depois R$ 24,90/semana
+                                    {texts("depois")} R$ 24,90/{texts("semana")}
                                 </Text>
                             </Row>
                         </Col>
@@ -86,12 +86,12 @@ export default function GetProScreen({ navigation }) {
                         <Col MD={10}>
                             <Row>
                                 <Text variant="titleLarge" style={{ color: "#fff" }}>
-                                    ACESSO VITALÍCIO
+                                    {texts("acessoVitalicio").toUpperCase()}
                                 </Text>
                             </Row>
                             <Row>
                                 <Text variant="titleSmall" style={{ color: "#fff" }}>
-                                    R$ 149,90 pagamento único
+                                    R$ 149,90 {texts("pagamentoUnico")}
                                 </Text>
                             </Row>
                         </Col>
@@ -101,7 +101,7 @@ export default function GetProScreen({ navigation }) {
                     </View>
                     <View style={{ backgroundColor: colors.primary, ...styles.offer }}>
                         <Text style={{ color: "#FFF" }}>
-                            OFERTA ESPECIAL
+                            {texts("ofertaEspecial")}
                         </Text>
                     </View>
                 </Pressable>

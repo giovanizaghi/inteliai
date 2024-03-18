@@ -5,9 +5,11 @@ import Col from "../components/Col";
 import { vh, vw } from "../constants/device";
 import { useTheme } from 'react-native-paper';
 import { useNavigation } from "@react-navigation/native";
+import language from "../../language";
 
 
 export default function HomeScreen() {
+    const { texts } = language();
     const { colors } = useTheme();
     const navigation = useNavigation();
 
@@ -20,13 +22,13 @@ export default function HomeScreen() {
         { id: 6, source: require("../../assets/tab1samp/06.png") },
     ];
     return (
-        <SafeAreaView style={{...styles.container, backgroundColor: colors.background}}>
+        <SafeAreaView style={{ ...styles.container, backgroundColor: colors.background }}>
             <View style={styles.content}>
 
-                <Row MD={1} spaceBetween>
+                <Row MD={1.2} spaceBetween>
                     <Col MD={5}>
                         <Text variant="headlineLarge">
-                            Avatares
+                            {texts("avatares")}
                         </Text>
                     </Col>
                     <Col MD={3}>
@@ -48,20 +50,20 @@ export default function HomeScreen() {
                     ))}
                 </Row>
 
-                <Row MD={1}>
+                <Row MD={.8}>
                     <Text variant="titleLarge" style={{ width: "100%", textAlign: "center" }}>
-                        Avatares de <Text style={{ color: colors.primary, fontWeight: "bold" }}>IA</Text>
+                        {texts("avataresDe")} <Text style={{ color: colors.primary, fontWeight: "bold" }}> {texts("inteligenciaArtificialAbreviado")}</Text>
                     </Text>
                 </Row>
                 <Row MD={1}>
                     <Text variant="bodyMedium" style={{ width: "100%", textAlign: "center" }}>
-                        Transforme suas fotos em avatares sensacionais usando uma avançada tecnologia de IA
+                        {texts("mensagemBoasVindas")}
                     </Text>
                 </Row>
 
-                <Row MD={1}>
+                <Row MD={1.5}>
                     <Button mode="contained" style={{ width: "100%" }} onPress={() => { }}>
-                        Criar meu avatar
+                        {texts("criarMeuAvatar")}
                     </Button>
                 </Row>
             </View>

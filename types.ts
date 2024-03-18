@@ -20,13 +20,18 @@ export type RootStackParamList = {
     GeneratedImage: {
         prompt: string,
         style: string,
+        image: string,
     },
     Prompt: {
         imageSample: string,
         style: string,
         title: string,
         description: string,
-    }
+    },
+    LoadingImage: {
+        prompt: string,
+        style: string,
+    },
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, Screen>;
