@@ -11,10 +11,13 @@ import Col from "../components/Col";
 import * as Sharing from 'expo-sharing';
 import { RewardedAdEventType, RewardedAd, TestIds } from 'react-native-google-mobile-ads';
 import language from "../../language";
+import useCache from "../hooks/useCache";
 
 export default function GeneratedImageScreen({ navigation, route }: RootStackScreenProps<'GeneratedImage'>) {
     const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-5538301654782962/2037216769';
     const rewarded = RewardedAd.createForAdRequest(adUnitId);
+    
+    const {fetchHasFreeCalls} = useCache();
 
     const { texts } = language();
     const { colors } = useTheme();
@@ -128,6 +131,8 @@ export default function GeneratedImageScreen({ navigation, route }: RootStackScr
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
             rewarded.load();
+            fetchHasFreeCalls();
+
         });
 
         return unsubscribe;

@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, Image, ScrollView, Pressable, TouchableOpacity } from "react-native";
+import { StyleSheet, SafeAreaView, Image, ScrollView, Pressable, TouchableOpacity, View } from "react-native";
 import Row from "../components/Row";
 import { Button, IconButton, Text, useTheme, } from 'react-native-paper';
 import Col from "../components/Col";
@@ -8,6 +8,7 @@ import { RootStackScreenProps } from "../../types";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RewardedAdEventType, RewardedAd, TestIds } from 'react-native-google-mobile-ads';
 import language from "../../language";
+import useCache from "../hooks/useCache";
 
 const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-5538301654782962/2037216769';
 
@@ -17,6 +18,7 @@ export default function GenerateScreen({ navigation, route }: RootStackScreenPro
 
     const { colors } = useTheme();
     const { texts } = language();
+    const { hasFreeCalls, fetchHasFreeCalls } = useCache();
 
     const [loaded, setLoaded] = useState(false);
     const [inputVisible, setInputVisible] = useState<boolean>(false);
@@ -112,9 +114,12 @@ export default function GenerateScreen({ navigation, route }: RootStackScreenPro
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            fetchHasFreeCalls();
+
             if (route?.params?.showInputOnLoad) {
                 setInputVisible(true);
             }
+
         });
 
         return unsubscribe();
@@ -203,6 +208,22 @@ export default function GenerateScreen({ navigation, route }: RootStackScreenPro
                                     <Text variant="labelLarge">
                                         {data.title}
                                     </Text>
+
+                                    <View
+                                        style={{
+                                            position: "absolute",
+                                            backgroundColor: (hasFreeCalls && !data.isPro) ? "transparent" : colors.primary,
+                                            borderRadius: 50,
+                                            paddingHorizontal: vw(2),
+                                            paddingVertical: vw(1),
+                                            right: vw(7),
+                                            top: vw(1)
+                                        }}>
+
+                                        <Text variant="labelLarge" style={{ color: colors.onPrimary }} >
+                                            {data.isPro ? "PRO" : hasFreeCalls ? "" : "AD"}
+                                        </Text>
+                                    </View>
                                 </TouchableOpacity>
                             )
                         }
@@ -249,7 +270,7 @@ const styles = StyleSheet.create({
     },
     largeImage: {
         marginRight: vw(5),
-        borderRadius: 10,
+        borderRadius: 15,
     },
     bottomBanner: {
         position: "absolute",

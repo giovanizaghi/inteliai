@@ -5,12 +5,14 @@ import { ActivityIndicator, Text, useTheme } from "react-native-paper";
 import { vw } from "../constants/device";
 import { OpenAI, eModel, eQuality, eResponseFormat, eSize, eStyle } from "gio-react-native-openai";
 import language from "../../language";
+import useCache from "../hooks/useCache";
 
 export default function LoadingImageScreen({ navigation, route }: RootStackScreenProps<'LoadingImage'>) {
     const { texts } = language();
     const { colors } = useTheme();
     const { prompt, style } = route?.params;
     const openai = new OpenAI(process.env.EXPO_PUBLIC_OPENAI, process.env.EXPO_PUBLIC_ORG);
+    const { useDailyFreeImages } = useCache();
 
     const handleCreate = useCallback(
         async () => {
@@ -19,6 +21,7 @@ export default function LoadingImageScreen({ navigation, route }: RootStackScree
 
                 if (__DEV__) {
                     const image = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDsGqi0HpRiSqlcThGJRn-3h9z6oVTxnV3bw&usqp=CAU";
+                    await useDailyFreeImages();
                     navigateToViewPage(image);
                     return;
                 }
@@ -35,7 +38,10 @@ export default function LoadingImageScreen({ navigation, route }: RootStackScree
                     eStyle.vivid,
                     "giovani");
 
-                console.log("DATA", response);
+                await useDailyFreeImages();
+
+                // console.log("DATA", response);
+
                 if (!response) return;
                 const image = response[0].url;
                 navigateToViewPage(image);
@@ -50,7 +56,7 @@ export default function LoadingImageScreen({ navigation, route }: RootStackScree
 
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener("focus", (a) =>{
+        const unsubscribe = navigation.addListener("focus", (a) => {
             handleCreate();
         });
 
@@ -58,19 +64,19 @@ export default function LoadingImageScreen({ navigation, route }: RootStackScree
     }, [navigation]);
 
     const navigateToViewPage = useCallback(
-      (imageUrl: string) => {
+        (imageUrl: string) => {
 
-        setTimeout(() => {
-            //TODO: se for PRO espera menos
+            setTimeout(() => {
+                //TODO: se for PRO espera menos
 
-            navigation.navigate("GeneratedImage", {
-                prompt: prompt,
-                image: imageUrl,
-                style: style
-            });
-        }, 5000);
-      },
-      [prompt, style],
+                navigation.navigate("GeneratedImage", {
+                    prompt: prompt,
+                    image: imageUrl,
+                    style: style
+                });
+            }, 5000);
+        },
+        [prompt, style],
     );
 
     return (
